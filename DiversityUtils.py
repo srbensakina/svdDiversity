@@ -3,14 +3,39 @@ from numpy.linalg import norm
 import pandas as pd
 from scipy import spatial
 
-
 places_data = pd.io.parsers.read_csv('data/places.csv', names=['place_id', 'title', 'genre'], engine='python',
                                      delimiter=',')
 
+
+def word2vec(word):
+    from collections import Counter
+    from math import sqrt
+
+    # count the characters in word
+    cw = Counter(word)
+    # precomputes a set of the different characters
+    sw = set(cw)
+    # precomputes the "length" of the word vector
+    lw = sqrt(sum(c * c for c in cw.values()))
+
+    # return a tuple
+    return cw, sw, lw
+
+
+def cosdis(v1, v2):
+    # which characters are common to the two words?
+    common = v1[1].intersection(v2[1])
+    # by definition of cosine distance we have
+    return sum(v1[0][ch] * v2[0][ch] for ch in common) / v1[2] / v2[2]
+
+
 categoriesAsNumbers = {}
 
-def calculateCos(candidates,diversified):
+
+def calculateCos(candidates, diversified):
     return 1 - spatial.distance.cosine(candidates, diversified)
+
+
 def calculateCosine(candidates, diversified):
     if (len(diversified) < len(candidates)):
         for i in range(len(candidates) - len(diversified)):
@@ -69,11 +94,12 @@ def diversifyCandidates(candidates, k):
         print("******************* iteration ", i, "**********************")
         copyC = pd.DataFrame([candidates.iloc[i]])
         copyD = pd.DataFrame(diversifiedList)
-        print("copyD : ",copyD,"copyC : ",copyC)
+        genreC = places_data['genre'].loc[copyC.at[i, 'place_id']]
+        genreD = places_data['genre'].loc[copyD.at[0, 'place_id']]
+        print("genre C :",genreC,"\nGenreD ;",genreD)
+        va = word2vec(genreD)
+        vb = word2vec(genreC)
 
-        diversifiedAsNp = generateArrayFromListOfObjects(copyD)
-        candidatesAsNp = generateArrayFromListOfObjects(copyC)
-        print("diversifiedAsNp : ",diversifiedAsNp,"candidatesASNp : ",candidatesAsNp)
-        arrayOfCosines.append(calculateCosine(candidatesAsNp, diversifiedAsNp))
-
+        arrayOfCosines.append(cosdis(va,vb))
     print(arrayOfCosines)
+    print("min cosine :",np.where(arrayOfCosines == np.amin(arrayOfCosines)))
