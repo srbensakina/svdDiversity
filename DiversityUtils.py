@@ -114,5 +114,4 @@ def diversifyCandidates(candidates, k):
         print("diversified ", diversifiedList, "length : ", len(diversifiedList))
         candidates = candidates.drop(minimalCosineIndex)
         candidates = candidates.reset_index(drop=True)
-
         #print("list of candidates :", candidates)
