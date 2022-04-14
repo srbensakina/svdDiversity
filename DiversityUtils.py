@@ -89,17 +89,30 @@ def diversifyCandidates(candidates, k):
     copyOfDiversified = pd.DataFrame(diversifiedList)
 
     arrayOfCosines = []
-    # while (len(diversifiedList) != k):
-    for i in range(len(candidates)):
-        print("******************* iteration ", i, "**********************")
-        copyC = pd.DataFrame([candidates.iloc[i]])
-        copyD = pd.DataFrame(diversifiedList)
-        genreC = places_data['genre'].loc[copyC.at[i, 'place_id']]
-        genreD = places_data['genre'].loc[copyD.at[0, 'place_id']]
-        print("genre C :",genreC,"\nGenreD ;",genreD)
-        va = word2vec(genreD)
-        vb = word2vec(genreC)
+    while (len(diversifiedList) != k):
+        for i in range(len(candidates)):
+            cosineOfCandidatesToDiversified = []
+            for j in range(len(diversifiedList)):
+                print("******************* iteration ", i, "**********************")
+                copyC = pd.DataFrame([candidates.iloc[i]])
+                copyD = pd.DataFrame([diversifiedList.iloc[j]])
 
-        arrayOfCosines.append(cosdis(va,vb))
-    print(arrayOfCosines)
-    print("min cosine :",np.where(arrayOfCosines == np.amin(arrayOfCosines)))
+                genreC = places_data['genre'].loc[copyC.at[i, 'place_id']]
+                genreD = places_data['genre'].loc[copyD.at[j, 'place_id']]
+                print("genre C :", genreC, "\nGenreD :", genreD)
+                va = word2vec(genreD)
+                vb = word2vec(genreC)
+                cosineOfCandidatesToDiversified.append(cosdis(va, vb))
+
+            arrayOfCosines.append(sum(cosineOfCandidatesToDiversified) / len(diversifiedList))
+        print(arrayOfCosines)
+        minimalCosineIndex = (np.where(arrayOfCosines == np.amin(arrayOfCosines))[0])[0]
+        print("min cosine :", minimalCosineIndex)
+        print("list of candidates :", candidates)
+        print("object to append", candidates.iloc[minimalCosineIndex])
+        diversifiedList = diversifiedList.append(candidates.iloc[minimalCosineIndex], ignore_index=True)
+        print("diversified ", diversifiedList, "length : ", len(diversifiedList))
+        candidates = candidates.drop(minimalCosineIndex)
+        candidates = candidates.reset_index(drop=True)
+
+        #print("list of candidates :", candidates)
