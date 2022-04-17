@@ -88,12 +88,12 @@ def diversifyCandidates(candidates, k):
     copyOfCandidates = pd.DataFrame(candidates)
     copyOfDiversified = pd.DataFrame(diversifiedList)
 
-    arrayOfCosines = []
     while (len(diversifiedList) != k):
+        arrayOfCosines = []
         for i in range(len(candidates)):
             cosineOfCandidatesToDiversified = []
             for j in range(len(diversifiedList)):
-                print("******************* iteration ", i, "**********************")
+                print("******************* iteration i: ", i, " j : ", j,"**********************")
                 copyC = pd.DataFrame([candidates.iloc[i]])
                 copyD = pd.DataFrame([diversifiedList.iloc[j]])
 
@@ -103,9 +103,10 @@ def diversifyCandidates(candidates, k):
                 va = word2vec(genreD)
                 vb = word2vec(genreC)
                 cosineOfCandidatesToDiversified.append(cosdis(va, vb))
+            print("M each candiates array",cosineOfCandidatesToDiversified,"size of diversified is: ",len(diversifiedList))
 
             arrayOfCosines.append(sum(cosineOfCandidatesToDiversified) / len(diversifiedList))
-        print(arrayOfCosines)
+        print("M each array candidat", arrayOfCosines)
         minimalCosineIndex = (np.where(arrayOfCosines == np.amin(arrayOfCosines))[0])[0]
         print("min cosine :", minimalCosineIndex)
         print("list of candidates :", candidates)
