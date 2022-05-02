@@ -32,17 +32,33 @@ R = np.array(ratings_right_filtered.pivot(
     columns='place_id',
     values='rating'
 ).fillna(0))
+#Rdf = pd.DataFrame(R, index=None, columns=None)
+#list1 = []
+#list2 = []
+#lis3 = []
+#for data in Rdf.iteritems():
+   # list1.append(np.count_nonzero(data[1]))
+   # list2.append(np.mean(data[1]))
+   # print(list2)
+   # lis3.append(data[1])
+#Rdf.loc['v'] = list1
+#m = np.mean(Rdf.loc['v'])
+#for place in list1:
+   # Rdf.loc['w'] = Rdf.loc['v'] / (Rdf.loc['v'] + m)
+#Rdf.loc['R'] = list2
+#C = np.nanmean(lis3)
+#popularity = np.array(Rdf.loc['w'] * Rdf.loc['R'] + (1 - Rdf.loc['w']) * C)
+# R['v'] = R[user_line].count(axis=1)
 mf = MF(R, K=20, alpha=0.001, beta=0.01, iterations=5)
 training_process = mf.train()
+# np.savetxt('factomatrix.csv', mf.full_matrix(), delimiter=',')
+# np.savetxt('Q.csv', mf.Q, delimiter=',')
 
 
-# try:
-#   mfcache = pd.read_csv("data/mfcache.csv")
-# except:
+
 #   start_time = time.time()
 #  np.savetxt("data/mfcache.csv", mf.full_matrix(), delimiter=",")
 # print("--- %s seconds ---" % (time.time() - start_time))
-
 
 # print()
 # print("P x Q:")
@@ -52,31 +68,21 @@ training_process = mf.train()
 
 
 def predict_movie_and_rating(user_id):
-    r= mf.full_matrix()
+    r = mf.full_matrix()
     if user_id in ratings_filtered.user_id.unique():
 
         # List of movies that the user has seen
         movie_id_list = ratings_filtered[ratings_filtered.user_id == user_id].place_id.tolist()
-        # for movie in movie_id_list:
-        # a = movie_data.loc[movie_data['movie_id'] == movie]['title'].values.tolist()
-        # print(a)" List of movies that the user has not seen
         unseen = {k: v for k, v in name_id_map.items() if not v in movie_id_list}
-        liked = [x for x in movie_id_list if x not in unseen.values()]
-        # print(liked)
-        # print(unseen.values())
+
         scores = []
         # For each movie that is unseen use the SVD model to predict that movie's rating
         for value in unseen.values():
-            # for value in range(len(movies_filtered)):
-            # print(value)
+
             index = user_id  # user_id starts with 0
-            # print(a)
-            # if value in unseen.values():
-            # continue
+
             predicted = r.item(index, value)
-            # predicted = r[user_id][unseen.get(movie_id)]
-            # print(movie_id, predicted)
-            # scores[movie_id] = predicted[3]
+
             title = movies_filtered.iloc[value]['title']
             movie_prediction = [value, predicted, title]
             scores.append(movie_prediction)
@@ -85,20 +91,13 @@ def predict_movie_and_rating(user_id):
         recommendations.sort_values('rating', ascending=False,
                                     inplace=True)
         recommendations.index = range(len(scores))
-        # id = []
-        # id= recommendations['place_id'].copy()
-        # Sort by decreasing scores as we want higher rated movies at the top
-        # recommendations.set_index('movies', inplace=True)
-        top_10 = recommendations.head(20)
-        # movies_recommended = []
-        # print(top_10.iloc[:,[0]].values)
-        # for i in top_10.iloc[:, [0]].values:
-        # print("i is ",i)
-        # movies_recommended = np.append(movies_recommended, movies_filtered.iloc[i]['title'].values)
+
+        top_10 = recommendations.head(8)
+
         print("\n\n--> We commend")
         print(top_10)
         # print(id)
-        return top_10, liked
+        return top_10
     # Return the top 10 predicted rated movies
 
     else:

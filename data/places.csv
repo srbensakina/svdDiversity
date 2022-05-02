@@ -1,8 +1,8 @@
-0,Hotel Méridien,Hotel
+0,Hotel Meridien,Hotel
 1,Hotel Sheraton,Hotel
 2,Hotel Phoenix,Hotel
 3,Hotel Les pins d'or,Hotel
-4,Hotel Président,Hotel
+4,Hotel President,Hotel
 5,Hotel Beach house,Hotel
 6,Hotel le petit chez soi  (ex Beau Rivage),Hotel
 7,Hotel Mon Château,Hotel
@@ -35,13 +35,13 @@
 34,Restaurant Le Merle Blanc,Restaurant
 35,Restaurant El Faro,Restaurant
 36,Restaurant La marquise,Restaurant
-37,Cinéma  murjajo,Cinéma
-38,Cinéma EL Marhaba,Cinéma
-39,Cinéma Tefna,Cinéma
-40,Cinéma el Fath,Cinéma
-41,Cinéma Es Sadda,Cinéma
-42,Cinéma Maghreb,Cinéma
-43,Cinematheque,Cinéma
+37,Cinema  murjajo,Cinema
+38,Cinema EL Marhaba,Cinema
+39,Cinema Tefna,Cinema
+40,Cinema el Fath,Cinema
+41,Cinema Es Sadda,Cinema
+42,Cinema Maghreb,Cinema
+43,Cinematheque,Cinema
 44,Parc d'attraction Djanet el Ahlem ,Parc
 45,Parc Aquatique New Beach,Parc
 46,Parc d'attraction Manege Miramar,Parc
@@ -57,7 +57,7 @@
 56,Paradis Plage,Plage
 57,Plage Les Dunes,Plage
 58,Plage Etoile ,Plage
-59,Plage Beau séjour,Plage
+59,Plage Beau sejour,Plage
 60,Plage Saint Roch,Plage
 61,Plage El Mordjane ,Plage
 62,Plage Saint Germain,Plage
@@ -74,7 +74,7 @@
 73,Centre commercial Kiteal ,Centre commercial
 74,Centre commenrcial Bayazit Market ,Centre commenrcial
 75,Jardin Akid Lotfi,Jardin
-76,Espace vert entrée canastel,Espace
+76,Espace vert entree canastel,Espace
 77,Jardin Publique Ain Turk,Jardin
 78,Jardin el othmania,Jardin
 79,  Espace vert Place d'Arme ,Espace
@@ -95,6 +95,6 @@
 94,Bibliotheque Le petit lecteur ,Bibliotheque
 95,Theatre de Verdure,Theatre
 96,Theatre Regional,Theatre
-97,Musée d'art Moderne,Musée
-98,Musée Ahmed Zabana,Musée
-99,Musée el Moujahid,Musée
+97,Musee d'art Moderne,Musee
+98,Musee Ahmed Zabana,Musee
+99,Musee el Moujahid,Musee
