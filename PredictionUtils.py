@@ -92,12 +92,14 @@ def predict_movie_and_rating(user_id):
                                     inplace=True)
         recommendations.index = range(len(scores))
 
+        full_list = recommendations.where(recommendations['rating'] > 3)
         top_10 = recommendations.head(8)
-
+        l = recommendations[8:]
+        #print(l)
         print("\n\n--> We commend")
         print(top_10)
         # print(id)
-        return top_10
+        return top_10,l
     # Return the top 10 predicted rated movies
 
     else:

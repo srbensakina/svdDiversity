@@ -8,10 +8,10 @@ places_data = pd.io.parsers.read_csv('data/places.csv', names=['place_id', 'titl
                                      delimiter=',')
 
 
-def diversifyCandidates(candidates, k, Q):
+def diversifyCandidates(candidates, k, Q,l):
     diversifiedList = pd.DataFrame([candidates.iloc[0]])
-    candidates = candidates.drop(0)
-    candidates = candidates.reset_index(drop=True)
+    # candidates = candidates.drop(0)
+    # candidates = candidates.reset_index(drop=True)
     print("candidates length : ", len(candidates))
     print("diversified length : ", len(diversifiedList))
 
@@ -19,11 +19,11 @@ def diversifyCandidates(candidates, k, Q):
 
     while len(diversifiedList) != k:
         arrayOfDistance = []
-        for i in range(len(candidates)):
+        for i in range(len(l)):
             DistanceOfCandidatesToDiversified = []
             for j in range(len(diversifiedList)):
                 print("******************* iteration i : ", i, "iteration  j :", j, "**********************")
-                idC = candidates.iloc[i]['place_id']
+                idC = l.iloc[i]['place_id']
                 idD = diversifiedList.iloc[j]['place_id']
 
                 vectorC = Q[idC]
@@ -36,8 +36,8 @@ def diversifyCandidates(candidates, k, Q):
         maxDistanceIndex = (np.where(arrayOfDistance == np.amax(arrayOfDistance))[0])[0]
         print("min cosine :", maxDistanceIndex)
         print("list of candidates :", candidates)
-        print("object to append", candidates.iloc[maxDistanceIndex])
-        diversifiedList = diversifiedList.append(candidates.iloc[maxDistanceIndex], ignore_index=True)
+        print("object to append", l.iloc[maxDistanceIndex])
+        diversifiedList = diversifiedList.append(l.iloc[maxDistanceIndex], ignore_index=True)
         print("diversified ", diversifiedList, "length : ", len(diversifiedList))
-        candidates = candidates.drop(maxDistanceIndex)
-        candidates = candidates.reset_index(drop=True)
+        l = l.drop(maxDistanceIndex)
+        l = l.reset_index(drop=True)
