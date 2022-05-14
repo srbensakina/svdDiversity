@@ -1,7 +1,6 @@
 from pickletools import long1
 from typing import List, Optional
 
-from secretstorage import Item
 from app.PredictionUtils import predict_movie_and_rating, mf
 from app.DiversityUtils import diversifyCandidates
 from fastapi import FastAPI
