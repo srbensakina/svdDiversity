@@ -49,14 +49,14 @@ def update_ratings(rate: Rate):
 
 
 @app.get("/api/v1/users/{user_id}/places/recommended")
-def get_diversified_recommendations(user_id: int):
+def get_recommended_places(user_id: int):
     top_20, l = predict_movie_and_rating(user_id)
     print("hmmm ", top_20.loc[:, 'place_id'].values)
     return JSONResponse(content=top_20.loc[:, 'place_id'].tolist())
 
 
 @app.get("/api/v1/users/{user_id}/places/diversified")
-def get_diversified_recommendations(user_id: int):
+def get_diversified_Places(user_id: int):
     top_20, l = predict_movie_and_rating(user_id)
     kDiversifiedItems = 4
     data = diversifyCandidates(top_20, kDiversifiedItems, mf.Q, l)
