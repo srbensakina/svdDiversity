@@ -47,4 +47,4 @@ def diversifyCandidates(candidates, k, Q, l):
               "length : ", len(diversifiedList))
         l = l.drop(maxDistanceIndex)
         l = l.reset_index(drop=True)
-    return diversifiedList.loc[:, 'place_id'].to_json()
+    return diversifiedList
