@@ -31,21 +31,27 @@ def read_root():
     return {"Recommending": "Api"}
 
 
-@app.post("/update/places")
+@app.post("/api/v1/update/places")
 def update_places(place: Place):
     with open('data/places.csv', 'a') as places:
         places.write(place.to_Place_Row())
     return "success"
 
 
-@app.post("/update/ratings")
+@app.post("/api/v1/update/ratings")
 def update_ratings(rate: Rate):
     with open('data/placesratings.csv', 'a') as placesRatings:
         placesRatings.write(rate.to_Rate_Row)
     return "success"
 
 
-@app.get("/users/{user_id}/places")
+@app.get("/api/v1/users/{user_id}/places/recommended")
+def get_diversified_recommendations(user_id: int):
+    top_20, l = predict_movie_and_rating(user_id)
+    return top_20.loc[:, 'place_id'].to_json()
+
+
+@app.get("/api/v1/users/{user_id}/places/diversified")
 def get_diversified_recommendations(user_id: int):
     top_20, l = predict_movie_and_rating(user_id)
     kDiversifiedItems = 4
