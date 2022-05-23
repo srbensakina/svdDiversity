@@ -102,7 +102,7 @@ def training_job():
     mf.train()
 
 
-@app.get("/start_training")
+@app.get("/api/v1/users/start_training")
 def start_training():
     Schedule.add_job(training_job, 'interval', hours=24)
     training_job()
