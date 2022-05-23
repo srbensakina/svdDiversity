@@ -131,8 +131,18 @@ def update_places(place: Place):
 
 @app.post("/api/v1/update/ratings")
 def update_ratings(rate: Rate):
-    with open('data/placesratings.csv', 'a') as placesRatings:
-        placesRatings.write(rate.to_Rate_Row)
+    x = 0
+
+    try:
+        userToInteger(rate.user_id)
+    except:
+        with open('data/userToInteger.csv', 'r') as userToInteger:
+            x = len(userToInteger.readlines())+1
+        with open('data/userToInteger.csv', 'a') as userToInteger:
+            userToInteger.write("\n{},{}".format(rate.user_id, x))
+    rate.user_id = x
+    with open('data/ratings.csv', 'a') as placesRatings:
+        placesRatings.write(rate.to_Rate_Row())
     return "success"
 
 
