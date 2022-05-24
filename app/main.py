@@ -134,7 +134,7 @@ def update_ratings(rate: Rate):
     x = 0
 
     try:
-        userToInteger(rate.user_id)
+        x = userToInteger(rate.user_id)
     except:
         with open('data/userToInteger.csv', 'r') as userToInteger:
             x = len(userToInteger.readlines())+1
