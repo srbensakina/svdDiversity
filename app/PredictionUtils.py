@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import schedule
+import time
 from app.MatrixFactorization import MF
 
 movie_data = pd.io.parsers.read_csv('data/places.csv', names=['place_id', 'title', 'genre'], engine='python',
@@ -53,7 +55,6 @@ R = np.array(ratings_right_filtered.pivot(
 #popularity = np.array(Rdf.loc['w'] * Rdf.loc['R'] + (1 - Rdf.loc['w']) * C)
 # R['v'] = R[user_line].count(axis=1)
 mf = MF(R, K=20, alpha=0.001, beta=0.01, iterations=5)
-training_process = mf.train()
 # np.savetxt('factomatrix.csv', mf.full_matrix(), delimiter=',')
 # np.savetxt('Q.csv', mf.Q, delimiter=',')
 

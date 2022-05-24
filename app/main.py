@@ -1,6 +1,12 @@
-from pickletools import long1
-from typing import List, Optional
+import logging
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from asyncio.log import logger
+import time
+from apscheduler.schedulers.background import BackgroundScheduler
 
+
+from typing import List
 from app.PredictionUtils import predict_movie_and_rating, mf
 from app.DiversityUtils import diversifyCandidates
 from fastapi import FastAPI
@@ -26,6 +32,27 @@ class Place(BaseModel):
         return "\n{},{}".format(self.id, self.name)
 
 
+class Location:
+    coordinates: List[int]
+    type: str
+
+    def __init__(self):
+        self.coordinates = [0, 0]
+        self.type = "Point"
+
+
+class BigPlace(BaseModel):
+    id: int
+    name: str
+    description: str
+    type: str
+    imglink: str
+    location: Location
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
 class Rate(BaseModel):
     user_id: str
     place_id: int
@@ -38,9 +65,61 @@ class Rate(BaseModel):
 app = FastAPI()
 
 
+# APScheduler Related Libraries
+
+
+Schedule = None
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@app.on_event("startup")
+async def load_schedule_or_create_blank():
+    """
+    Instatialise the Schedule Object as a Global Param and also load existing Schedules from SQLite
+    This allows for persistent schedules across server restarts. 
+    """
+    global Schedule
+    try:
+        jobstores = {
+            'default': SQLAlchemyJobStore(url='sqlite:///jobs.sqlite')
+        }
+        Schedule = AsyncIOScheduler(jobstores=jobstores)
+        Schedule.start()
+
+        logger.info("Created Schedule Object")
+    except:
+        logger.error("Unable to Create Schedule Object")
+
+
 @app.get("/")
 def read_root():
     return {"Recommending": "Api"}
+
+
+def training_job():
+    print("started")
+    mf.train()
+
+
+@app.get("/api/v1/users/start_training")
+def start_training():
+    Schedule.add_job(training_job, 'interval', hours=24)
+    training_job()
+    return "done"
+
+
+@app.get("/placesAsJson")
+def get_places_as_json():
+    data = pd.io.parsers.read_csv('data/places.csv', names=['place_id', 'title', 'genre'], engine='python',
+                                  delimiter=',')
+    mylist = []
+    for index, row in data.iterrows():
+        aplace = BigPlace(id=row['place_id'],
+                          name=row['title'], type=row['genre'], description="some wonderful place", imglink="https://res.cloudinary.com/wavy/image/upload/v1577177858/FB_IMG_1576505116453.jpg", location=Location())
+        mylist.append(aplace)
+    print(Location())
+    return mylist
 
 
 @app.post("/api/v1/update/places")
@@ -52,8 +131,18 @@ def update_places(place: Place):
 
 @app.post("/api/v1/update/ratings")
 def update_ratings(rate: Rate):
-    with open('data/placesratings.csv', 'a') as placesRatings:
-        placesRatings.write(rate.to_Rate_Row)
+    x = 0
+
+    try:
+        userToInteger(rate.user_id)
+    except:
+        with open('data/userToInteger.csv', 'r') as userToInteger:
+            x = len(userToInteger.readlines())+1
+        with open('data/userToInteger.csv', 'a') as userToInteger:
+            userToInteger.write("\n{},{}".format(rate.user_id, x))
+    rate.user_id = x
+    with open('data/ratings.csv', 'a') as placesRatings:
+        placesRatings.write(rate.to_Rate_Row())
     return "success"
 
 
